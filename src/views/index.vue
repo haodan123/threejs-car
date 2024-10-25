@@ -6,7 +6,12 @@
         <div class="group">
           <p class="title">车漆颜色</p>
           <div class="item_wrap col_group">
-            <div data-col="#ff9900" v-for="(item, index) in colorList" :key="index">
+            <div
+              @click="changeCarColor(item)"
+              :class="item.isSelected ? 'active' : ''"
+              v-for="(item, index) in colorList"
+              :key="index"
+            >
               <div class="col" :style="{ backgroundColor: item.color }"></div>
               <p>{{ item.title }}</p>
             </div>
@@ -15,7 +20,12 @@
         <div class="group">
           <p class="title">贴膜切换</p>
           <div class="item_wrap coat_group">
-            <div :data-co="item.name" v-for="(item, index) in coatList" :key="index">
+            <div
+              @click="changeCarCoat(item)"
+              :class="item.isSelected ? 'active' : ''"
+              v-for="(item, index) in coatList"
+              :key="index"
+            >
               <div></div>
               <p class="info_btn">{{ item.name }} ¥{{ item.price }}</p>
             </div>
@@ -24,7 +34,12 @@
         <div class="group">
           <p class="title">场景切换</p>
           <div class="item_wrap scene_group">
-            <div :data-poi="item.name" v-for="(item, index) in sceneList" :key="index">
+            <div
+              @click="changeSky(item)"
+              :class="item.isSelected ? 'active' : ''"
+              v-for="(item, index) in sceneList"
+              :key="index"
+            >
               <div></div>
               <p class="info_btn">{{ item.name }}</p>
             </div>
@@ -33,7 +48,12 @@
         <div class="group">
           <p class="title">视角切换</p>
           <div class="item_wrap look_group">
-            <div :data-po="item.data" v-for="(item, index) in lookList" :key="index">
+            <div
+              @click="changeLook(item)"
+              :class="item.isSelected ? 'active' : ''"
+              v-for="(item, index) in lookList"
+              :key="index"
+            >
               <div></div>
               <p class="info_btn">{{ item.name }}</p>
             </div>
@@ -41,7 +61,7 @@
         </div>
       </div>
       <div class="price">
-        <span>¥ 2444700.00 </span>
+        <span>¥ {{ price }} </span>
         <div class="next_btn">下一步</div>
       </div>
     </div>
@@ -49,12 +69,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useThreeInit } from '@/composables/threesInit.js'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js' //辅助工具
 import { colorList, coatList, sceneList, lookList } from '@/utils/dataList.js'
 
 import { ClickHandler } from '@/utils/ClickHandler.js'
+import emitter from '@/utils/mitt'
+
 const carRef = ref()
 let scene, camera, renderer, controls, css3dRenderer, css2dRenderer
 onMounted(() => {
@@ -71,6 +93,54 @@ onMounted(() => {
 
   resizeRender()
 })
+// 计算属性只能监控 ref的变化 不能监控普通数组的变化  所以吧dataList中所有的数据都改成ref数据
+const price = computed(() => {
+  let zprice = 2444700.0
+  const findCoat = coatList.value.find(item => item.isSelected)
+  zprice += findCoat.price
+  return zprice.toFixed(2)
+})
+
+// 修改车的颜色
+const changeCarColor = item => {
+  // 调用eventBus
+  colorList.value.forEach(obj => {
+    // 把所有的选中都取消
+    obj.isSelected = false
+  })
+  emitter.emit('changeCarColor', item)
+  item.isSelected = true //选中当前的颜色
+}
+// 修改车的贴膜
+const changeCarCoat = item => {
+  coatList.value.forEach(obj => {
+    // 把所有的选中都取消
+    obj.isSelected = false
+  })
+  emitter.emit('changeCarCoat', item)
+  item.isSelected = true
+}
+// 修改天空
+const changeSky = item => {
+  if (item.isSelected) return //如果已经选中 不能继续执行
+  sceneList.value.forEach(obj => {
+    // 把所有的选中都取消
+    obj.isSelected = false
+  })
+  emitter.emit('changeSky', item)
+  item.isSelected = true
+}
+
+// 修改视角
+const changeLook = item => {
+  if (item.isSelected) return //如果已经选中 不能继续执行
+  lookList.value.forEach(obj => {
+    // 把所有的选中都取消
+    obj.isSelected = false
+  })
+  emitter.emit('changeLook', item)
+  item.isSelected = true
+}
 
 // 监听浏览器宽高
 const resizeRender = () => {
@@ -117,6 +187,10 @@ const resizeRender = () => {
 .item_wrap {
   display: flex;
   text-align: center;
+}
+.active {
+  color: red;
+  border: 1px solid red;
 }
 .group_list {
   overflow-y: scroll;

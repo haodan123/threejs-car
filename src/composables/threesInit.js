@@ -6,7 +6,7 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { loadManager } from '@/model/loadManager'
 import { Car } from '@/model/Car'
 import { MyLight } from '@/effect/MyLight'
-import { Sky } from '@/effect/Sky'
+import Sky from '@/effect/Sky'
 
 import * as THREE from 'three'
 /**
@@ -60,7 +60,7 @@ export const useThreeInit = (dom) => {
     // 加载模型是异步的的  所以轨道控制器比这个函数先调用
     loadManager('glb/Lamborghini.glb', (model) => {
       // 加载汽车模型
-      new Car(model, scene, camera, controls,dom)
+      new Car(model, scene, camera, controls, dom)
       // 加载灯光
       new MyLight(scene)
       // 加载天空
@@ -158,6 +158,26 @@ export const useThreeInit = (dom) => {
   createStats()
   // 循环渲染
   renderLoop()
+
+  // 监听轨道控制器 旋转/拖拽等事件 方便找到驾驶位的坐标
+  // controls.addEventListener('change', () => {
+  // console.log(camera.position) //摄像机的位置
+  // console.log(controls.target) //正在观察的坐标点对象
+  // })
+
+  // 双击进入驾驶位
+  window.addEventListener('dblclick', e => {
+    // 外观
+    // camera.position.set(3, 1.5, 3)
+    // controls.target = new THREE.Vector3(0, 0, 0)
+    // 主驾驶
+    // camera.position.set(0.31, 0.98, -0.23)
+    // controls.target = new THREE.Vector3(0.16, 0.38, 0.49)
+    // 副驾驶
+    // camera.position.set(-0.26, 0.93, -0.17)
+    // controls.target =  
+
+  })
   // 监听浏览器宽高
   // resizeRender()
   // })

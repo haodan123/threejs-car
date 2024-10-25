@@ -1,5 +1,6 @@
 // 整个threejs项目 单机事件管理类
 import * as THREE from 'three'
+// import emitter from './mitt'
 
 export class ClickHandler {
   // 单例模式（静态/类方法）: 这个类被调用 n 次也只会产生同一个实例对象
@@ -38,6 +39,7 @@ export class ClickHandler {
       list2.forEach(obj => {
         // console.log(obj);
         const fn = this.map.get(obj.object)
+        // emitter.emit('openDoor', obj.object)
         // 调用这个函数 并吧three物体传回去
         fn(obj.object)
       })
