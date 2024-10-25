@@ -24,8 +24,11 @@ export default class Sky {
   }
   // 创建室内环境
   createInDoor() {
+    const loader = new THREE.TextureLoader()
+    loader.setPath('image/')
     // 球体
     const geometry = new THREE.SphereGeometry(10, 32, 16);
+
     const material = new THREE.MeshBasicMaterial({ color: 0x42454c, side: THREE.DoubleSide });//双面渲染灰色天空
     const sphere = new THREE.Mesh(geometry, material);
     this.scene.add(sphere);//添加到场景
@@ -33,7 +36,21 @@ export default class Sky {
     // 创建一个圆形的平面地板
     const cirGeometry = new THREE.CircleGeometry(10, 32);
     // 标准材质 方便加地面阴影
-    const cirMaterial = new THREE.MeshStandardMaterial({ color: 0x42454c });
+    // 地板纹理
+    const circleTexture = loader.load('insand.jpg')
+    // 颜色加深
+    circleTexture.colorSpace = THREE.SRGBColorSpace
+    // 环境纹理贴图
+    const roughnessTexture = loader.load('insand.png')
+    roughnessTexture.colorSpace = THREE.SRGBColorSpace
+    const cirMaterial = new THREE.MeshStandardMaterial({
+      color: 0x42454c,
+      map: circleTexture,
+      roughness: 0.5 // 粗糙度设置（0 光滑， 1 粗糙）
+      , roughnessMap: roughnessTexture,//粗糙度贴图
+      metalness: 1, // 金属度（光反射的光泽程度，1 是最高）
+      metalnessMap: roughnessTexture, // 金属度贴图
+    });
     const circle = new THREE.Mesh(cirGeometry, cirMaterial);
     // console.log(circle);
 

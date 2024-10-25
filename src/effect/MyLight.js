@@ -26,7 +26,7 @@ export class MyLight {
         this.createSportL()
         this.dcLightArr.forEach(dclight => {
           // dclight.intensity = 0.5//平行光灯光亮度调到0.5
-          dclight.intensity = 0.5//平行光灯光亮度调到0.5
+          dclight.intensity = 1//平行光灯光亮度调到0.5
         })
       } else if (item.name == '户外') {
         // 删除聚光灯
@@ -44,8 +44,7 @@ export class MyLight {
   createCarDL() {
 
     this.dirPosList.forEach(item => {
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      // const directionalLight = new THREE.DirectionalLight(0xffffff, 8);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
       directionalLight.position.set(...item)
       directionalLight.castShadow = true
 
