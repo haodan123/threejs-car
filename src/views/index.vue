@@ -87,10 +87,10 @@ onMounted(() => {
   controls = init.controls
   css3dRenderer = init.css3dRenderer
   css2dRenderer = init.css2dRenderer
+  renderer.shadowMap.enabled = true // 开启阴影渲染支持
 
-  // three.js 光线投射统一管理类初始化
+  // three.js 光线投射统一管理类初始化  threejs的点击事件
   ClickHandler.getInstance().init(camera, carRef.value)
-
   resizeRender()
 })
 // 计算属性只能监控 ref的变化 不能监控普通数组的变化  所以吧dataList中所有的数据都改成ref数据

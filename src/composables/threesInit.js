@@ -49,6 +49,9 @@ export const useThreeInit = (dom) => {
 
     renderer = new THREE.WebGLRenderer({ antialias: true }) //设置antialias为true就没有锯齿了
     renderer.setSize(width, height)
+
+    renderer.shadowMap.enabled = true // 开启阴影渲染支持
+
     // testBox.value.appendChild(renderer.domElement)
     // 渲染到body上
     if (dom) {
@@ -175,7 +178,7 @@ export const useThreeInit = (dom) => {
     // controls.target = new THREE.Vector3(0.16, 0.38, 0.49)
     // 副驾驶
     // camera.position.set(-0.26, 0.93, -0.17)
-    // controls.target =  
+    // controls.target =
 
   })
   // 监听浏览器宽高
